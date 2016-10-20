@@ -1,0 +1,170 @@
+/
+* if(p) {S;}
+* p is a pointer
+* free(p) in S
+* all the execution path of S will raise MemExp, if p is null pointer.
+/
+
+/**************************************/
+https://github.com/luna/luna/blob/master/deps/linenoise/linenoise.c
+
+int linenoiseHistorySetMaxLen(int len) {
+    char **new;
+
+    if (len < 1) return 0;
+    if (history) {
+        int tocopy = history_len;
+
+        new = malloc(sizeof(char*)*len);
+        if (new == NULL) return 0;
+        if (len < tocopy) tocopy = len;
+        memcpy(new,history+(history_max_len-tocopy), sizeof(char*)*tocopy);
+        free(history);
+        history = new;
+    }
+    history_max_len = len;
+    if (history_len > history_max_len)
+        history_len = history_max_len;
+    return 1;
+}
+
+/******************************************/
+https://github.com/Orc/discount/blob/master/basename.c
+
+static void e_free(char *string, void *context)
+{
+    if ( string ) free(string);
+}
+
+/******************************************/
+https://github.com/Orc/discount/blob/master/theme.c
+/*main*/
+
+int popd(HERE pwd)
+{
+    if ( pwd ) {
+        int rc = chdir(pwd);
+        free(pwd);
+
+        return rc;
+    }
+    return -1;
+}
+
+/******************************************/
+https://github.com/Orc/discount/blob/master/css.c
+
+int mkd_generatecss(Document *d, FILE *f)
+{
+    char *res;
+    int written = EOF, size = mkd_css(d, &res);
+
+    if ( size > 0 )
+        written = fwrite(res, 1, size, f);
+    if ( res )
+        free(res);
+    return (written == size) ? size : EOF;
+}
+
+/******************************************/
+https://github.com/Orc/discount/blob/master/mkdio.c
+
+Document* __mkd_new_Document()
+{
+    Document *ret = calloc(sizeof(Document), 1);
+
+    if ( ret ) {
+        if ( ret->ctx = calloc(sizeof(MMIOT), 1) ) {
+            ret->magic = VALID_DOCUMENT;
+            return ret;
+        }
+        free(ret);
+    }
+    return 0;
+}
+/*
+(1) calloc;  ret->ctx = calloc; return ret;
+(2) calloc; free
+*/
+
+
+if (line)
+        free(line);
+
+/******************************************/
+https://github.com/Orc/discount/blob/master/resource.c
+
+void ___mkd_freeParagraph(Paragraph *p)
+{
+    if (p->next)
+        ___mkd_freeParagraph(p->next);
+    if (p->down)
+        ___mkd_freeParagraph(p->down);
+    if (p->text)
+        ___mkd_freeLines(p->text);
+    if (p->ident)
+        free(p->ident);
+    if (p->lang)
+        free(p->lang);
+    free(p);
+}
+
+/******************************************/
+https://github.com/APE-Project/APE_Server/blob/master/src/raw.c
+
+void destroy_raw_pool(struct _raw_pool *ptr)
+{
+        struct _raw_pool *pool = ptr, *tpool = NULL;
+
+        while (pool != NULL) {
+                if (pool->raw != NULL) {
+                        free_raw(pool->raw);
+                }
+                if (pool->start) {
+                        if (tpool != NULL) {
+                                free(tpool);
+                        }
+                        tpool = pool;
+                }
+                pool = pool->next;
+        }
+        if (tpool != NULL) {
+                free(tpool);
+        }
+}
+
+/******************************************/
+https://github.com/dinhviethoa/libetpan/blob/master/src/driver/implementation/feed/feedstorage.c
+
+static void feed_mailstorage_uninitialize(struct mailstorage * storage)
+{
+  struct feed_mailstorage * feed_storage;
+
+  feed_storage = storage->sto_data;
+
+  if (feed_storage->feed_flags_directory != NULL)
+    free(feed_storage->feed_flags_directory);
+  if (feed_storage->feed_cache_directory != NULL)
+    free(feed_storage->feed_cache_directory);
+  free(feed_storage->feed_url);
+  free(feed_storage);
+
+  storage->sto_data = NULL;
+}
+
+/******************************************/
+https://github.com/dinhviethoa/libetpan/blob/master/tests/fetch-attachment.c
+https://github.com/dinhviethoa/libetpan/blob/master/tests/frm-simple.c
+https://github.com/dinhviethoa/libetpan/blob/master/tests/frm-common.c
+if (server != NULL)
+    free(server);
+  if (user != NULL)
+    free(user);
+  if (password != NULL)
+    free(password);
+  if (path != NULL)
+    free(path);
+  if (cache_directory != NULL)
+    free(cache_directory);
+  if (flags_directory != NULL)
+    free(flags_directory);

@@ -1,0 +1,205 @@
+https://github.com/luna/luna/blob/master/deps/linenoise/linenoise.c
+int linenoiseHistorySetMaxLen(int len) {
+    char **new;
+
+    if (len < 1) return 0;
+    if (history) {
+        int tocopy = history_len;
+
+        new = malloc(sizeof(char*)*len);
+        if (new == NULL) return 0;
+        if (len < tocopy) tocopy = len;
+        memcpy(new,history+(history_max_len-tocopy), sizeof(char*)*tocopy);
+        free(history);
+        history = new;
+    }
+    history_max_len = len;
+    if (history_len > history_max_len)
+        history_len = history_max_len;
+    return 1;
+}
+
+# static void freeHistory(void) {
+#     if (history) {
+#         int j;
+
+#         for (j = 0; j < history_len; j++)
+#             free(history[j]);
+#         free(history);
+#     }
+# }
+
+
+# https://github.com/orangeduck/BuildYourOwnLisp/blob/master/src/mpc.c
+# static void mpc_input_delete(mpc_input_t *i) {
+
+#   free(i->filename);
+
+#   if (i->type == MPC_INPUT_STRING) { free(i->string); }
+#   if (i->type == MPC_INPUT_PIPE) { free(i->buffer); }
+
+#   free(i->marks);
+#   free(i->lasts);
+#   free(i);
+# }
+
+
+# https://github.com/riolet/nope.c/blob/master/nopeapi.c
+# bool routeRequest(Request *request, Response * response, const char *path, void (*function) (Request *, Response *))
+# {
+#     char *queryPath = getQueryPath(request);
+#     if (strcmp(queryPath, path) == 0) {
+#         free(queryPath);
+#         if (function != NULL)
+#             function(request, response);
+#         return true;
+#     } else {
+#         free(queryPath);
+#         return false;
+#     }
+# }
+
+https://github.com/Orc/discount/blob/master/basename.c
+static void e_free(char *string, void *context)
+{
+    if ( string ) free(string);
+}
+
+https://github.com/Orc/discount/blob/master/theme.c
+/*main*/
+int
+popd(HERE pwd)
+{
+    if ( pwd ) {
+        int rc = chdir(pwd);
+        free(pwd);
+
+        return rc;
+    }
+    return -1;
+}
+
+https://github.com/Orc/discount/blob/master/css.c
+int
+mkd_generatecss(Document *d, FILE *f)
+{
+    char *res;
+    int written = EOF, size = mkd_css(d, &res);
+
+    if ( size > 0 )
+        written = fwrite(res, 1, size, f);
+    if ( res )
+        free(res);
+    return (written == size) ? size : EOF;
+}
+
+https://github.com/Orc/discount/blob/master/mkdio.c
+Document*
+__mkd_new_Document()
+{
+    Document *ret = calloc(sizeof(Document), 1);
+
+    if ( ret ) {
+        if ( ret->ctx = calloc(sizeof(MMIOT), 1) ) {
+            ret->magic = VALID_DOCUMENT;
+            return ret;
+        }
+        free(ret);
+    }
+    return 0;
+}
+
+if (line)
+        free(line);
+
+https://github.com/Orc/discount/blob/master/resource.c
+void
+___mkd_freeParagraph(Paragraph *p)
+{
+    if (p->next)
+        ___mkd_freeParagraph(p->next);
+    if (p->down)
+        ___mkd_freeParagraph(p->down);
+    if (p->text)
+        ___mkd_freeLines(p->text);
+    if (p->ident)
+        free(p->ident);
+    if (p->lang)
+        free(p->lang);
+    free(p);
+}
+
+# void
+# mkd_cleanup(Document *doc)
+# {
+#     if ( doc && (doc->magic == VALID_DOCUMENT) ) {
+#         if ( doc->ctx ) {
+#             ___mkd_freemmiot(doc->ctx, 0);
+#             free(doc->ctx);
+#         }
+
+#         if ( doc->code) ___mkd_freeParagraph(doc->code);
+#         if ( doc->title) ___mkd_freeLine(doc->title);
+#         if ( doc->author) ___mkd_freeLine(doc->author);
+#         if ( doc->date) ___mkd_freeLine(doc->date);
+#         if ( T(doc->content) ) ___mkd_freeLines(T(doc->content));
+#         memset(doc, 0, sizeof doc[0]);
+#         free(doc);
+#     }
+# }
+
+https://github.com/APE-Project/APE_Server/blob/master/src/raw.c
+void destroy_raw_pool(struct _raw_pool *ptr)
+{
+        struct _raw_pool *pool = ptr, *tpool = NULL;
+
+        while (pool != NULL) {
+                if (pool->raw != NULL) {
+                        free_raw(pool->raw);
+                }
+                if (pool->start) {
+                        if (tpool != NULL) {
+                                free(tpool);
+                        }
+                        tpool = pool;
+                }
+                pool = pool->next;
+        }
+        if (tpool != NULL) {
+                free(tpool);
+        }
+}
+
+
+https://github.com/dinhviethoa/libetpan/blob/master/src/driver/implementation/feed/feedstorage.c
+static void feed_mailstorage_uninitialize(struct mailstorage * storage)
+{
+  struct feed_mailstorage * feed_storage;
+
+  feed_storage = storage->sto_data;
+
+  if (feed_storage->feed_flags_directory != NULL)
+    free(feed_storage->feed_flags_directory);
+  if (feed_storage->feed_cache_directory != NULL)
+    free(feed_storage->feed_cache_directory);
+  free(feed_storage->feed_url);
+  free(feed_storage);
+
+  storage->sto_data = NULL;
+}
+
+https://github.com/dinhviethoa/libetpan/blob/master/tests/fetch-attachment.c
+https://github.com/dinhviethoa/libetpan/blob/master/tests/frm-simple.c
+https://github.com/dinhviethoa/libetpan/blob/master/tests/frm-common.c
+if (server != NULL)
+    free(server);
+  if (user != NULL)
+    free(user);
+  if (password != NULL)
+    free(password);
+  if (path != NULL)
+    free(path);
+  if (cache_directory != NULL)
+    free(cache_directory);
+  if (flags_directory != NULL)
+    free(flags_directory);

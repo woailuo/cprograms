@@ -1,0 +1,225 @@
+dnsget.c
+  main: q = query_new(name, dn,l_qtyp);
+          dnserror(q,..)
+  query_new: malloc; malloc
+  dnserror: query_free
+  query_free: free;free
+
+
+nsinstall.c (有宏定义)
+  copydir:   destdir = malloc;
+                if(mkdirs(destdir,mode) != 0) {…; free(destdir); return;}
+                if(!(dir=opendir(from))) { …; free(destdir); return;}
+                direntry= malloc;
+                destentry = malloc;
+                free(destdir); free(direntry); free(destentry);
+
+main:       if (!cwd) {
+                #ifndef NEEDS_GETCWD
+                #ifndef GETCWD_CANT_MALLOC
+                cwd = getcwd(0, PATH_MAX);
+                #else
+                cwd = malloc(PATH_MAX + 1);
+                cwd = getcwd(cwd, PATH_MAX);
+                #endif
+                #else
+                cwd = malloc(PATH_MAX + 1);
+                cwd = getwd(cwd);
+                #endif
+                 }
+
+
+                #ifndef NEEDS_GETCWD
+                #ifndef GETCWD_CANT_MALLOC
+                todir = getcwd(0, PATH_MAX);
+                #else
+                todir = malloc(PATH_MAX + 1);
+                todir = getcwd(todir, PATH_MAX);
+                #endif
+                #else
+                todir = malloc(PATH_MAX + 1);
+                todir = getwd(todir);
+                #endif
+
+                while() {
+                   if {linkname = malloc;}
+                   if(linkname) free(linkname);
+                  }
+
+                 if() {copyedir;} else {….}
+
+                 toname = malloc;
+                 free(toname);
+                 free(cwd); free(todir);
+
+https://github.com/luna/luna/blob/master/test/test.c:
+static void
+test_value_is() {
+  luna_object_t one = { .type = LUNA_TYPE_INT, .value.as_int = 1 };
+  assert(luna_is_int(&one));
+  assert(!luna_is_string(&one));
+
+  luna_object_t two = { .type = LUNA_TYPE_NULL };
+  assert(luna_is_null(&two));
+}
+
+pathsub.c:
+pyobjc-tc.c:
+rblcheck.c :     addzone();   malloc; free;
+
+        static void addzone(const char *zone) {
+         if (nzones >= nzalloc) {
+         const char **zs = (const char**)ecalloc(sizeof(char*), (nzalloc += 16));
+        if (zones) {
+        memcpy(zs, zones, nzones * sizeof(char*));
+        free(zones);
+         }
+        zones = zs;
+         }
+         zones[nzones++] = zone;
+        }
+
+struct1:    malloc; free
+struct2:  same
+udns_init.c  : no main
+                   malloc; free
+
+conditionals.c:
+           readline:   malloc;
+           lval_num:   malloc;
+           lval_err:   malloc; malloc; realloc;
+           lval_sym:  malloc; malloc
+           lval_eval: (lenv_get; lval_del +0); (lval_eval_sexpr +0)
+           lenv_get: ua.(malloc+0); (a + 0)
+           lval_builtin:  malloc;
+           lval_lambda: malloc
+           lval_sexpr: malloc
+           lval_del :  switch case:  (free + free + free;);   free
+           lval_copy:  malloc;   switch case (malloc+malloc+0)
+           lval_add:  realloc;
+           lval_join:  for() {lval_add};  free(); free
+           lval_pop:  realloc;
+           lval_take:  lval_pop; lval_del
+           lenv_new:   malloc
+           lval_del:   for{free;lval_del};   free;free;free;
+           lenv_copy:  malloc;malloc;malloc; for{malloc}
+           lenv_put:  for (lval_del)  ;   ralloc;realloc;lval_copy; malloc
+           builtin_lambda:  lval_pop; lval_pop; lval_del;
+           builtin_tail:   lval_take; oval_del(lval_pop())
+           builtin_eval:   lval_take;
+           builtin_join:  lval_pop; while {oval_pop; oval_join;};  oval_del;
+           builtin_op: lval_pop; while {oval_pop;   (oval_del; lval_del +  0); lval_del}; lval_del;
+           builtin_var:  for {(lenv_def + 0); (lenv_put + 0)};  oval_del;
+           builtin_ord:   lval_del
+           builtin_cmp:   lval_del
+           builtin_if:   (lval_eval (lval_pop) +  lval_eval(lval_pop));   lval_del
+           main:
+
+
+
+error_handling.c:
+                readline:  malloc
+                main:    while {readline;  free}
+
+
+evaluation.c  :  same
+
+functions.c :
+mpc.c:
+
+parsing.c :  malloc; free
+prompt.c:  malloc;free
+
+q_expression.c:
+                readline: malloc
+                lval_num:  malloc
+                lval_err:  malloc;malloc
+                lval_sym:  malloc;malloc;
+                lval_sexpr:  malloc
+                lval_qexpr:  malloc
+                lval_del:  switch(v->type) (free + free + for{oval_del};free) ;  free;
+                lval_add:  realloc
+                lval_pop:  realloc
+                lval_join:  while{oval_add};  oval_del;
+                lval_take:   lval_pop;  lval_del
+                builtin_head:  lval_take; while(>1) {oval_del}
+                builtin_tail:   lval_take; lval_del(lval_pop)
+                builtin_eval:  lval_take; lval_eval;
+                built_join:  lval_pop;  while(a->count) {lval_join(lval_pop)}
+                built_op:  for(){if(a->type) != num {lval_del} };  lval_pop;
+                                              while(a->conut>0) { if(y->num ==0) {lval_del; lval_del;};  lval_del}
+                                      lval_del
+                builtin:  if( strcmp ==0) builtin_list;….; lval_del
+                lval_eval_sexpr :  for(count) {lval_eval};
+                                                                 for()  { if(type == enum ) {lval_take}};
+                                                         if(type != enum) {lval_del};
+                                                                                                                  lval_del;
+                lval_eval:  if(type == enum) {lval_eval_sexpr};
+                lval_read_num:  errno != erange ? lval_num: lval_err;
+                lval_read:   if(strstr) {lval_read_num}….
+                main:  while(1) {input = readline; if(mpc_parse){lval_eval(lval_read)} else{error}; free(input);   }
+
+theme.c :
+                popd:   if(pwd) {free(pwd); return rc;} ; ...; return -1
+
+base64.c :   malloc; for() {if(== -1 || .. ) { free}}
+charconv.c:
+libetpan  太多
+
+
+nope.c:
+                queueDelete:  #ifdef sth free #endif;   free;free;
+                freeHeaders:  while(!=null) {free}; free;
+
+
+
+poker.c:
+  if(pn)
+    {
+
+    free(pn->name);
+    /* free */
+    Num = Num + 1;
+
+    free(pn);
+    /* free */
+    Num = Num + 1;
+    }
+  else
+    {
+      printf("Error: pointer is null \n");
+       exit(1);
+    }
+
+gen_init_cpio.c:
+        int end = 0, dname_len = 0;
+        fail:
+        if (dname_len) free(dname);
+        return rc;
+
+decompress_unlzo.c:
+   int main(*input, *output) {
+       if(){...} else if (){...} else {malloc;}
+       if(){...} else if (){...} else {malloc;}
+        exit_2:
+        if (!input)
+          {	free(in_buf_save);
+            Num=Num + 1;}
+      exit_1:
+        if (!output)
+          {	free(out_buf);
+            Num=Num + 1;}
+      exit:
+        return ret;
+
+}
+
+#free掉一个没有初始化的指针时， 编译阶段 不报错， 运行阶段报错#
+
+expr:  database.c,  poker.c,  gen_init_cpio.c,  decopress_unlzo.c
+
+discount/theme.c
+
+buildlist/q_expression.c
+
+libetpan/base64.c  (no main)
